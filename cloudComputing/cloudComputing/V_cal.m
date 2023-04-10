@@ -1,0 +1,22 @@
+function[value]=V_cal(L,K,M,gamma,P,dD2D,dMEC,Fue,Fmec,Dd2d,Dmec,k1,k2)
+    [pue,pD2D,pMEC]=P_separation(P,gamma);
+    Tlsum=TLsum(L,Fue);
+    TD2Dsum=Tmax(K,Fue,pD2D,dD2D);
+    TMECsum=Tmax(M,Fmec,pMEC,dMEC);
+    Energy_trans=Etrasum(K,M,dD2D,dMEC,pD2D,pMEC);
+    Energy_exe=Eexesum(Dd2d,Dmec,L,K,M);
+    if(Tlsum-TD2Dsum>0.0)
+        if(Tlsum-TMECsum>0.0)
+            temp=Tlsum;
+        else
+            temp=TMECsum;
+        end
+    else
+        if(TD2Dsum-TMECsum>0.0)
+            temp=TD2Dsum;
+        else
+            temp=TMECsum;
+        end
+    end
+    value=temp+k1*(Energy_trans)+k2*(Energy_exe);
+end

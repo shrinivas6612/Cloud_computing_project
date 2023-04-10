@@ -1,0 +1,38 @@
+function[p2]=Compute_P2(L,K,M,gamma,P,g0,N0,dD2D,dMEC,sigma,Fue,Fmec,Dd2d,Dmec,b,k1,k2)
+    [pue,pD2D,pMEC]=P_separation(P,gamma);
+    Tlsum=TLsum(L,Fue);
+    TD2Dsum=Tmax(K,Fue,pD2D,dD2D);
+    TMECsum=Tmax(M,Fmec,pMEC,dMEC);
+    Energy_trans=Etrasum(K,M,dD2D,dMEC,pD2D,pMEC);
+    %Energy_exe=Eexesum(Dd2d,Dmec,L,K,M);
+    temp=(N0*b)/(g0*power(dD2D,sigma));
+    temp1=(N0*b)/(g0*power(dMEC,sigma));
+    Energy_exe1=0;
+    RD2D=Rate_trans(pD2D,dD2D);
+    for i=1:size(K,1)
+        Energy_exe1=Energy_exe1+((1/RD2D(i))*K(i,1)*(power(2,(RD2D(i)/b)-1)));
+    end
+    Energy_exe1=(temp*Energy_exe1);
+    RMEC=Rate_trans(pMEC,dD2D);
+    Energy_exe2=0;
+    for i=1:size(M,1)
+        Energy_exe2=Energy_exe2+((1/RMEC(i))*M(i,1)*(power(2,(RMEC(i)/b)-1)));
+    end
+    Energy_exe2=(temp1*Energy_exe2);
+    Energy_exe3=Energy_exe1+Energy_exe2;
+    temp=0.0;
+    if(Tlsum-TD2Dsum>0.0)
+        if(Tlsum-TMECsum>0.0)
+            temp=Tlsum;
+        else
+            temp=TMECsum;
+        end
+    else
+        if(TD2Dsum-TMECsum>0.0)
+            temp=TD2Dsum;
+        else
+            temp=TMECsum;
+        end
+    end
+    p2=temp+k1*(Energy_trans)+k2*(Energy_exe3);
+end
