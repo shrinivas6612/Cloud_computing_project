@@ -7,7 +7,6 @@
 3. Shrinivas Bagadi - (191CS156)
 4. Yash Sharma - (191CS164)
 
-#### Execute VNE-code.py for results
 
 ### Example:
 #### Sample output
